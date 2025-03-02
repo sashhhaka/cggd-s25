@@ -73,9 +73,9 @@ namespace cg::renderer
 	{
 		if (render_target)
 		{
-			for (size_t i=0; i<render_terget->count(); i++)
+			for (size_t i=0; i<render_target->count(); i++)
 			{
-				render_target()->item(i) = in_clear_value;
+				render_target->item(i) = in_clear_value;
 			}
 		}
 		// TODO Lab: 1.06 Adjust `set_render_target`, and `clear_render_target` methods of `cg::renderer::rasterizer` class to consume a depth buffer
