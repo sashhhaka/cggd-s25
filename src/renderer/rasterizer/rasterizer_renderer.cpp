@@ -46,16 +46,26 @@ void cg::renderer::rasterization_renderer::init()
 }
 void cg::renderer::rasterization_renderer::render()
 {
-	rasterizer->vertex_shader = [&](float4 vertex, cg::vertex vertex_data) {
-		float4x4 matrix = mul(
-			camera->get_projection_matrix(),
-			camera->get_view_matrix(),
-			model->get_world_matrix());
 
+	float4x4 matrix = mul(
+		camera->get_projection_matrix(),
+		camera->get_view_matrix(),
+		model->get_world_matrix());
+
+	using namespace linalg::ostream_overloads;
+	std::cout << camera->get_projection_matrix() << std::endl;
+	std::cout << camera->get_view_matrix() << std::endl;
+
+	rasterizer->vertex_shader = [&](float4 vertex, cg::vertex vertex_data) {
 		float4 processed = mul(matrix, vertex);
-		
 		return std::make_pair(processed, vertex_data);
 	};
+
+	rasterizer->pixel_shader = [](cg::vertex vertex_data, float z) {
+		return cg::color::from_float3(vertex_data.ambient);
+	};
+
+
 
 	auto start = std::chrono::high_resolution_clock::now();
 
