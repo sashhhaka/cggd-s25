@@ -57,3 +57,25 @@ From experiment, performance depends on resolution linearly.
 - Index buffer size: 144 bytes
 - Pure vertex buffer size: 2448 bytes
 - Saving: 672 bytes
+
+## Creative task
+I have implemented a simple transparency and noise filter for rendering the object. Code changes were made mainly in resterizer_renderer.cpp.
+
+alpha: Controls how transparent will the object be (0 - not transparent, 1 - fully transparent)
+noise_amplitude: Controls the strength of the noise effect (how much it affects the color)
+noise_frequency: Controls how rapidly the noise changes across the surface
+
+Results:
+```--alpha=0.5```
+
+![alt text](result-1.png)
+![alt text](result-4.png)
+
+```--noise_amplitude=2.0 --noise_frequency=1.0```
+
+![alt text](result-2.png)
+![alt text](result-5.png)
+
+```--noise_amplitude=2.0 --noise_frequency=1.0 --alpha=0.5```
+![alt text](result-3.png)
+![alt text](result-6.png)
