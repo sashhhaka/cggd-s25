@@ -80,6 +80,8 @@ namespace cg
 	{
 		return stride;
 	}
+	
+	struct unsigned_color;
 
 	struct color
 	{
@@ -94,6 +96,8 @@ namespace cg
 		float r;
 		float g;
 		float b;
+
+		static color from_unsigned_color(const unsigned_color& uc);
 	};
 
 	struct unsigned_color
@@ -126,7 +130,20 @@ namespace cg
 		uint8_t r;
 		uint8_t g;
 		uint8_t b;
+
+
+		
 	};
+
+	inline color color::from_unsigned_color(const unsigned_color& uc)
+	{
+	    return color{
+	        static_cast<float>(uc.r) / 255.f,
+	        static_cast<float>(uc.g) / 255.f,
+	        static_cast<float>(uc.b) / 255.f
+	    };
+	}
+	// };
 
 
 	struct vertex

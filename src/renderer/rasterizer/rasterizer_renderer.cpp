@@ -1,7 +1,5 @@
 #include "rasterizer_renderer.h"
-
 #include "utils/resource_utils.h"
-
 
 void cg::renderer::rasterization_renderer::init()
 {
@@ -10,6 +8,9 @@ void cg::renderer::rasterization_renderer::init()
 	render_target = std::make_shared<cg::resource<cg::unsigned_color>>(settings->width, settings->height);
 
 	depth_buffer = std::make_shared<cg::resource<float>>(settings->width, settings->height);
+	
+	// Add a new buffer to store the original color values for blending
+	original_color_buffer = std::make_shared<cg::resource<cg::unsigned_color>>(settings->width, settings->height);
 
 	rasterizer->set_render_target(render_target, depth_buffer);
 
@@ -44,10 +45,13 @@ void cg::renderer::rasterization_renderer::init()
 	camera->set_z_near(settings->camera_z_near);
 	camera->set_z_far(settings->camera_z_far);
 
+	// Store the alpha value from settings
+	alpha_value = settings->alpha;
+	std::cout << "Using alpha value: " << alpha_value << std::endl;
 }
+
 void cg::renderer::rasterization_renderer::render()
 {
-
 	float4x4 matrix = mul(
 		camera->get_projection_matrix(),
 		camera->get_view_matrix(),
@@ -62,26 +66,47 @@ void cg::renderer::rasterization_renderer::render()
 		return std::make_pair(processed, vertex_data);
 	};
 
-	rasterizer->pixel_shader = [](cg::vertex vertex_data, float z) {
-		return cg::color::from_float3(vertex_data.ambient);
-	};
-
-
-
+	// First render: clear to background color
 	auto start = std::chrono::high_resolution_clock::now();
-
 	rasterizer->clear_render_target({111, 15, 112});
-
+	
+	// Store the background color
+	for (size_t i = 0; i < render_target->count(); i++) {
+		original_color_buffer->item(i) = render_target->item(i);
+	}
+	
 	auto stop = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<float, std::milli> duration = stop - start;
 	std::cout << "Clearing took " << duration.count() << "ms\n";
 
+	// Modify the pixel shader to use alpha blending
+	rasterizer->pixel_shader = [&](cg::vertex vertex_data, float z) {
+		// Get the current position in 2D
+		int x = static_cast<int>(vertex_data.position.x);
+		int y = static_cast<int>(vertex_data.position.y);
+		
+		// Clamp coordinates to ensure they're within bounds
+		x = std::max(0, std::min(static_cast<int>(settings->width) - 1, x));
+		y = std::max(0, std::min(static_cast<int>(settings->height) - 1, y));
+		
+		// Get source color (object color)
+		cg::color source_color = cg::color::from_float3(vertex_data.ambient);
+		
+		// Get destination color (background color)
+		cg::color dest_color = cg::color::from_unsigned_color(original_color_buffer->item(x, y));
+		
+		// Perform alpha blending: result = alpha * source + (1 - alpha) * destination
+		float3 blended_color = alpha_value * source_color.to_float3() + (1.0f - alpha_value) * dest_color.to_float3();
+		
+		return cg::color::from_float3(blended_color);
+	};
+
+	// Draw the model with transparency
 	for (size_t shape_id=0; shape_id<model->get_index_buffers().size(); shape_id++)
 	{
 		rasterizer->set_vertex_buffer(model->get_vertex_buffers()[shape_id]);
 		rasterizer->set_index_buffer(model->get_index_buffers()[shape_id]);
 		rasterizer->draw(
-			// model->get_vertex_buffers()[shape_id]->count(), 0);
 			model->get_index_buffers()[shape_id]->count(), 0);
 	}
 

@@ -29,6 +29,9 @@ namespace cg
 		unsigned accumulation_num;
 
 		std::filesystem::path shader_path;
+		
+		// New parameter for transparency
+		float alpha = 0.5f;
 	};
 
 }// namespace cg
