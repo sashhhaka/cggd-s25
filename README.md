@@ -53,7 +53,7 @@ From experiment, performance depends on resolution linearly.
 
 
 ### Vertex and index buffer
-Vertex buffer size: 1632 bytes
-Index buffer size: 144 bytes
-Pure vertex buffer size: 2448 bytes
-Saving: 672 bytes
+- Vertex buffer size: 1632 bytes
+- Index buffer size: 144 bytes
+- Pure vertex buffer size: 2448 bytes
+- Saving: 672 bytes
