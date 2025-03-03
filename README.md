@@ -66,6 +66,7 @@ noise_amplitude: Controls the strength of the noise effect (how much it affects 
 noise_frequency: Controls how rapidly the noise changes across the surface
 
 Results:
+
 ```--alpha=0.5```
 
 ![alt text](images/result-1.png)
