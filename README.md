@@ -68,14 +68,14 @@ noise_frequency: Controls how rapidly the noise changes across the surface
 Results:
 ```--alpha=0.5```
 
-![alt text](result-1.png)
-![alt text](result-4.png)
+![alt text](images/result-1.png)
+![alt text](images/result-4.png)
 
 ```--noise_amplitude=2.0 --noise_frequency=1.0```
 
-![alt text](result-2.png)
-![alt text](result-5.png)
+![alt text](images/result-2.png)
+![alt text](images/result-5.png)
 
 ```--noise_amplitude=2.0 --noise_frequency=1.0 --alpha=0.5```
-![alt text](result-3.png)
-![alt text](result-6.png)
+![alt text](images/result-3.png)
+![alt text](images/result-6.png)
