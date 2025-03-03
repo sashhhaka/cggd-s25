@@ -47,7 +47,7 @@ Premake5.exe
 *.tlog/
 
 # Images
-*.png
+# *.png
 
 # VS code
 .vscode/
