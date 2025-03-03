@@ -27,6 +27,8 @@ std::shared_ptr<settings> cg::settings::parse_settings(int argc, char** argv)
 	add_options("accumulation_num", "Number of accumulated frames", cxxopts::value<unsigned>()->default_value("1"));
 	add_options("shader_path", "Path to a shader file", cxxopts::value<std::filesystem::path>()->default_value("shaders/shaders.hlsl"));
 	add_options("alpha", "Transparency value (0.0-1.0)", cxxopts::value<float>()->default_value("1.0"));
+	add_options("noise_amplitude", "Amplitude of surface noise (0.0-1.0)", cxxopts::value<float>()->default_value("0.1"));
+	add_options("noise_frequency", "Frequency of surface noise", cxxopts::value<float>()->default_value("0.05"));
 	add_options("h,help", "Print usage");
 
 	auto result = options.parse(argc, argv);
@@ -50,6 +52,8 @@ std::shared_ptr<settings> cg::settings::parse_settings(int argc, char** argv)
 	settings->accumulation_num = result["accumulation_num"].as<unsigned>();
 	settings->shader_path = result["shader_path"].as<std::filesystem::path>();
 	settings->alpha = result["alpha"].as<float>();
+	settings->noise_amplitude = result["noise_amplitude"].as<float>();
+	settings->noise_frequency = result["noise_frequency"].as<float>();
 
 	return settings;
 }

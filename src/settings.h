@@ -30,8 +30,12 @@ namespace cg
 
 		std::filesystem::path shader_path;
 		
-		// New parameter for transparency
+		// Parameter for transparency
 		float alpha = 0.5f;
+		
+		// Parameters for noise effect
+		float noise_amplitude = 0.1f;
+		float noise_frequency = 0.05f;
 	};
 
 }// namespace cg
