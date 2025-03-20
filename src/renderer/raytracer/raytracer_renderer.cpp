@@ -41,6 +41,9 @@ void cg::renderer::ray_tracing_renderer::init()
 		float3{0.78f, 0.78f, 0.78f},
 	});
 	// TODO Lab: 2.04 Initialize `shadow_raytracer` in `ray_tracing_renderer`
+	shadow_raytracer = std::make_shared<cg::renderer::raytracer<cg::vertex, cg::unsigned_color>>();
+	shadow_raytracer->set_index_buffers(model->get_index_buffers());
+	shadow_raytracer->set_vertex_buffers(model->get_vertex_buffers());
 }
 
 void cg::renderer::ray_tracing_renderer::destroy() {}
@@ -49,6 +52,18 @@ void cg::renderer::ray_tracing_renderer::update() {}
 
 void cg::renderer::ray_tracing_renderer::render()
 {
+	shadow_raytracer->miss_shader = [](const ray& ray) {
+		payload payload{};
+		payload.t = -1.f;
+		return payload;
+	};
+
+	shadow_raytracer->any_hit_shader = [&](const ray& ray, payload& payload, const triangle<cg::vertex>& triangle) {
+		return payload;
+	};
+
+	shadow_raytracer->build_acceleration_structure();
+
 	raytracer->clear_render_target({0, 0, 0});
 	
 
@@ -71,7 +86,9 @@ void cg::renderer::ray_tracing_renderer::render()
 		for (auto& light : lights)
 		{
 			cg::renderer::ray to_light(position, light.position - position);
-			result_color +=triangle.diffuse * light.color * std::max(0.f, dot(normal, to_light.direction));
+			auto shadow = shadow_raytracer->trace_ray(to_light, 1, length(light.position - position));
+			if (shadow.t < 0.f)
+				result_color +=triangle.diffuse * light.color * std::max(0.f, dot(normal, to_light.direction));
 		}
 		
 		payload.color = cg::color::from_float3(result_color);
