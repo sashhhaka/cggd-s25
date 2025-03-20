@@ -205,7 +205,8 @@ namespace cg::renderer
 			for (int y = 0; y < height; y++)
 			{
 				float u = (2.f * x)/static_cast<float>(width - 1) - 1.f;
-				float v = 1.f - (2.f * y)/static_cast<float>(height - 1) - 1.f;
+				// float v = 1.f - (2.f * y)/static_cast<float>(height - 1) - 1.f;
+				float v = 1.f - (2.f * (height - 1 - y)) / static_cast<float>(height - 1); 
 				u *= static_cast<float>(width) / static_cast<float>(height);
 				float3 ray_direction = direction + u*right - v*up;
 				ray ray(position, ray_direction);
