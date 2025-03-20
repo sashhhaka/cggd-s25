@@ -34,6 +34,7 @@ void cg::world::model::load_obj(const std::filesystem::path& model_path)
 	auto& attrib = reader.GetAttrib();
 	auto& materials = reader.GetMaterials();
 
+
 	allocate_buffers(shapes);
 
 	fill_buffers(shapes, attrib, materials, model_path.parent_path());
