@@ -40,7 +40,6 @@ void cg::renderer::ray_tracing_renderer::init()
 		float3{0.f, 1.58f, -0.03f},
 		float3{0.78f, 0.78f, 0.78f},
 	});
-	// TODO Lab: 2.04 Initialize `shadow_raytracer` in `ray_tracing_renderer`
 	shadow_raytracer = std::make_shared<cg::renderer::raytracer<cg::vertex, cg::unsigned_color>>();
 	shadow_raytracer->set_index_buffers(model->get_index_buffers());
 	shadow_raytracer->set_vertex_buffers(model->get_vertex_buffers());
@@ -98,8 +97,6 @@ void cg::renderer::ray_tracing_renderer::render()
 	};
 	
 	raytracer->build_acceleration_structure();
-	// TODO Lab: 2.05 Adjust `ray_tracing_renderer` class to build the acceleration structure
-	// TODO Lab: 2.06 (Bonus) Adjust `closest_hit_shader` for Monte-Carlo light tracing
 
 	auto start = std::chrono::high_resolution_clock::now();
 
