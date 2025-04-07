@@ -45,7 +45,6 @@ void cg::renderer::dx12_renderer::destroy()
 
 void cg::renderer::dx12_renderer::update()
 {
-	// TODO Lab: 3.08
 	auto now = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<float> duration = now - current_time;
 	frame_duration = duration.count();
@@ -57,7 +56,6 @@ void cg::renderer::dx12_renderer::update()
 
 void cg::renderer::dx12_renderer::render()
 {
-	// TODO Lab: 3.06
 	populate_command_list();
 
 	ID3D12CommandList* command_lists[] = {command_list.Get()};
@@ -128,8 +126,6 @@ void cg::renderer::dx12_renderer::create_swap_chain(ComPtr<IDXGIFactory4>& dxgi_
 
 void cg::renderer::dx12_renderer::create_render_target_views()
 {
-	// TODO Lab: 3.04
-	// TODO Lab: 3.04
 	rtv_heap.create_heap(device, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, frame_number);
 	for (UINT i = 0; i < frame_number; i++) {
 		THROW_IF_FAILED(swap_chain->GetBuffer(i, IID_PPV_ARGS(&render_targets[i])));
@@ -149,7 +145,6 @@ void cg::renderer::dx12_renderer::create_depth_buffer()
 
 void cg::renderer::dx12_renderer::create_command_allocators()
 {
-	// TODO Lab: 3.06
 	for (auto& command_allocator: command_allocators) {
 		THROW_IF_FAILED(device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&command_allocator)));
 	}
@@ -157,7 +152,6 @@ void cg::renderer::dx12_renderer::create_command_allocators()
 
 void cg::renderer::dx12_renderer::create_command_list()
 {
-	// TODO Lab: 3.06
 	THROW_IF_FAILED(device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, command_allocators[frame_index].Get(), pipeline_state.Get(), IID_PPV_ARGS(&command_list)));
 
 }
@@ -180,7 +174,6 @@ D3D12_STATIC_SAMPLER_DESC cg::renderer::dx12_renderer::get_sampler_descriptor()
 
 void cg::renderer::dx12_renderer::create_root_signature(const D3D12_STATIC_SAMPLER_DESC* sampler_descriptors, UINT num_sampler_descriptors)
 {
-	// TODO Lab: 3.05
 	CD3DX12_ROOT_PARAMETER1 root_parameters[1];
 	CD3DX12_DESCRIPTOR_RANGE1 ranges[1];
 
@@ -216,13 +209,11 @@ void cg::renderer::dx12_renderer::create_root_signature(const D3D12_STATIC_SAMPL
 
 std::filesystem::path cg::renderer::dx12_renderer::get_shader_path()
 {
-	// TODO Lab: 3.05
 	return std::filesystem::path(settings->shader_path);
 }
 
 ComPtr<ID3DBlob> cg::renderer::dx12_renderer::compile_shader(const std::string& entrypoint, const std::string& target)
 {
-	// TODO Lab: 3.05
 	ComPtr<ID3DBlob> shader, error;
 	UINT compile_flags = 0;
 	#ifdef _DEBUG
@@ -240,8 +231,6 @@ ComPtr<ID3DBlob> cg::renderer::dx12_renderer::compile_shader(const std::string& 
 
 void cg::renderer::dx12_renderer::create_pso()
 {
-	// TODO Lab: 3.05
-	// TODO Lab: 3.05
 	ComPtr<ID3DBlob> vertex_shader = compile_shader("VSMain", "vs_5_0");
 	ComPtr<ID3DBlob> pixel_shader = compile_shader("PSMain", "ps_5_0");
 
@@ -309,7 +298,6 @@ void cg::renderer::dx12_renderer::copy_data(const void* buffer_data, const UINT 
 
 D3D12_VERTEX_BUFFER_VIEW cg::renderer::dx12_renderer::create_vertex_buffer_view(const ComPtr<ID3D12Resource>& vertex_buffer, const UINT vertex_buffer_size)
 {
-	// TODO Lab: 3.04 
 	D3D12_VERTEX_BUFFER_VIEW view = {};
 	view.BufferLocation = vertex_buffer->GetGPUVirtualAddress();
 	view.StrideInBytes = sizeof(vertex);
@@ -319,7 +307,6 @@ D3D12_VERTEX_BUFFER_VIEW cg::renderer::dx12_renderer::create_vertex_buffer_view(
 
 D3D12_INDEX_BUFFER_VIEW cg::renderer::dx12_renderer::create_index_buffer_view(const ComPtr<ID3D12Resource>& index_buffer, const UINT index_buffer_size)
 {
-	// TODO Lab: 3.04
 	D3D12_INDEX_BUFFER_VIEW view = {};
 	view.BufferLocation = index_buffer->GetGPUVirtualAddress();
 	view.SizeInBytes = index_buffer_size;
@@ -333,7 +320,6 @@ void cg::renderer::dx12_renderer::create_shader_resource_view(const ComPtr<ID3D1
 
 void cg::renderer::dx12_renderer::create_constant_buffer_view(const ComPtr<ID3D12Resource>& buffer, D3D12_CPU_DESCRIPTOR_HANDLE cpu_handler)
 {
-	// TODO Lab: 3.04
 	D3D12_CONSTANT_BUFFER_VIEW_DESC desc = {};
 	desc.BufferLocation = buffer->GetGPUVirtualAddress();
 	desc.SizeInBytes = (sizeof(cb) + 255) & ~255;
@@ -342,12 +328,6 @@ void cg::renderer::dx12_renderer::create_constant_buffer_view(const ComPtr<ID3D1
 
 void cg::renderer::dx12_renderer::load_assets()
 {
-	// TODO Lab: 3.05
-	// TODO Lab: 3.05
-	// TODO Lab: 3.06
-
-	// TODO Lab: 3.04
-
 	create_root_signature(nullptr, 0);
 	create_pso();
 	create_command_allocators();
@@ -387,12 +367,7 @@ void cg::renderer::dx12_renderer::load_assets()
 
 	cbv_srv_heap.create_heap(device, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 1, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
 	create_constant_buffer_view(constant_buffer, cbv_srv_heap.get_cpu_descriptor_handle(0));
-	// TODO Lab: 3.04
-	// TODO Lab: 3.04
 
-	// TODO Lab: 3.04
-
-	// TODO Lab: 3.07
 	THROW_IF_FAILED(command_list->Close());
 
 	THROW_IF_FAILED(device->CreateFence(
@@ -408,7 +383,6 @@ void cg::renderer::dx12_renderer::load_assets()
 
 void cg::renderer::dx12_renderer::populate_command_list()
 {
-	// TODO Lab: 3.06
 	THROW_IF_FAILED(command_allocators[frame_index]->Reset());
 	THROW_IF_FAILED(command_list->Reset(command_allocators[frame_index].Get(), pipeline_state.Get()));
 
@@ -446,7 +420,6 @@ void cg::renderer::dx12_renderer::populate_command_list()
 
 void cg::renderer::dx12_renderer::move_to_next_frame()
 {
-	// TODO Lab: 3.07
 	const UINT64 current_fence_value = fence_values[frame_index];
 	THROW_IF_FAILED(command_queue->Signal(fence.Get(), current_fence_value));
 	frame_index = swap_chain->GetCurrentBackBufferIndex();
@@ -459,7 +432,6 @@ void cg::renderer::dx12_renderer::move_to_next_frame()
 
 void cg::renderer::dx12_renderer::wait_for_gpu()
 {
-	// TODO Lab: 3.07
 	THROW_IF_FAILED(command_queue->Signal(
 		fence.Get(), fence_values[frame_index]));
 	THROW_IF_FAILED(fence->SetEventOnCompletion(fence_values[frame_index], fence_event));
@@ -470,7 +442,6 @@ void cg::renderer::dx12_renderer::wait_for_gpu()
 
 void cg::renderer::descriptor_heap::create_heap(ComPtr<ID3D12Device>& device, D3D12_DESCRIPTOR_HEAP_TYPE type, UINT number, D3D12_DESCRIPTOR_HEAP_FLAGS flags)
 {
-	// TODO Lab: 3.04
 	D3D12_DESCRIPTOR_HEAP_DESC desc = {};
 	desc.NumDescriptors = number;
 	desc.Type = type;
@@ -483,19 +454,16 @@ void cg::renderer::descriptor_heap::create_heap(ComPtr<ID3D12Device>& device, D3
 
 D3D12_CPU_DESCRIPTOR_HANDLE cg::renderer::descriptor_heap::get_cpu_descriptor_handle(UINT index) const
 {
-	// TODO Lab: 3.04
 	return CD3DX12_CPU_DESCRIPTOR_HANDLE(heap->GetCPUDescriptorHandleForHeapStart(), static_cast<INT>(index), descriptor_size);
 
 }
 
 D3D12_GPU_DESCRIPTOR_HANDLE cg::renderer::descriptor_heap::get_gpu_descriptor_handle(UINT index) const
 {
-	// TODO Lab: 3.04
 	return CD3DX12_GPU_DESCRIPTOR_HANDLE(heap->GetGPUDescriptorHandleForHeapStart(), static_cast<INT>(index), descriptor_size);
 
 }
 ID3D12DescriptorHeap* cg::renderer::descriptor_heap::get() const
 {
-	// TODO Lab: 3.04 
 	return heap.Get();
 }
